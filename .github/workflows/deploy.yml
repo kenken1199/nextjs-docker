@@ -6,28 +6,22 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Build Docker image
-        run: |
-          docker build -t your-app:latest .
-          docker save your-app:latest > your-app.tar
-          chmod 664 your-app.tar
-
-      - name: Transfer Docker image to VPS
-        uses: appleboy/scp-action@master
+      - name: Login to Dockerhub
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USERNAME }}
-          key: ${{ secrets.VPS_SSH }}
-          port: ${{ secrets.VPS_PORT }}
-          source: "your-app.tar"
-          target: "/tmp"
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t username/repo_name:latest .
+          docker push username/repo_name:latest
 
       - name: Deploy to VPS
         uses: appleboy/ssh-action@master
@@ -37,7 +31,6 @@ jobs:
           key: ${{ secrets.VPS_SSH }}
           port: ${{ secrets.VPS_PORT }}
           script: |
-            docker load < /tmp/your-app.tar
-            docker stop your-app || true
-            docker rm your-app || true
-            docker run -d --name your-app -p 8003:8003 your-app:latest
+            docker pull username/repo_name:latest
+            cd repo_name
+            docker-compose up -d --build
