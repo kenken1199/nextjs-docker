@@ -21,8 +21,8 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build -t username/repo_name:latest .
-          docker push username/repo_name:latest
+          docker build -t kenken2428/repo_name:latest .
+          docker push enken2428/repo_name:latest
 
       - name: Deploy to VPS
         uses: appleboy/ssh-action@master
@@ -32,6 +32,6 @@ jobs:
           key: ${{ secrets.VPS_SSH }}
           port: ${{ secrets.VPS_PORT }}
           script: |
-            docker pull username/repo_name:latest
+            docker pull kenken2428/repo_name:latest
             cd repo_name
             docker-compose up -d --build
