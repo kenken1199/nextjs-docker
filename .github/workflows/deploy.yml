@@ -34,4 +34,4 @@ jobs:
           script: |
             docker pull kenken2428/repo_name:latest
             cd repo_name
-            docker-compose up -d --build
+            docker compose up -d --build
