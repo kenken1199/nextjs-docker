@@ -9,7 +9,7 @@ services:
       dockerfile: Dockerfile
     restart: always
     ports:
-      - 4400:4400
+      - 3000:3000
 
   nginx:
     container_name: next-app-nginx
