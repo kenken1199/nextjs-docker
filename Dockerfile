@@ -6,14 +6,12 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-FROM node:18-alpine AS runtime
+FROM nginx:1.21.0-alpine as production
+ENV NODE_ENV production
+RUN rm -rf /usr/share/nginx/html/*
+COPY --from=builder /usr/src/next-nginx/out /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY --from=build /app/.next ./.next
-COPY --from=build /app/public ./public
-
-EXPOSE 3000
-USER node
-CMD ["npm", "start"]
+EXPOSE 80
+# start nginx
+CMD ["nginx", "-g", "daemon off;"]
