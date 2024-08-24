@@ -1,10 +1,22 @@
-version: "3.9"
+version: "3"
 
 services:
-  # this service should use the web image after I build it
-  web:
-    image: next-nginx:dev
+  app:
+    container_name: next-app
+    image: next-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
     ports:
-      - "3000:80"
-    environment:
-      NODE_ENV: development
+      - 4400:4400
+
+  nginx:
+    container_name: next-app-nginx
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - 4400:80
+    depends_on:
+      - app
