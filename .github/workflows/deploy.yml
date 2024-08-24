@@ -20,4 +20,10 @@ jobs:
           username: ${{ secrets.VPS_USERNAME }}
           key: ${{ secrets.VPS_SSH }}
           port: ${{ secrets.VPS_PORT }}
-          script: bash deploy.sh
+          # script: bash deploy.sh
+          script: |
+            cd /home/kenta/nextjs-docker
+            docker compose down
+            git pull
+            docker compose build
+            docker compose up --detach
