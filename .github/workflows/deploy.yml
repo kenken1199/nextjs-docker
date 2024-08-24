@@ -33,5 +33,4 @@ jobs:
           port: ${{ secrets.VPS_PORT }}
           script: |
             docker pull kenken2428/repo_name:latest
-            cd repo_name
             docker compose up -d --build
